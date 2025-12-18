@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="icon_zpl_designer.ico" alt="ZPL Designer Logo" width="128" height="128">
+  <img src="zpl_designer/icon_zpl_designer.ico" alt="ZPL Designer Logo" width="128" height="128">
 </p>
 
 <h1 align="center">ZPL Designer</h1>
