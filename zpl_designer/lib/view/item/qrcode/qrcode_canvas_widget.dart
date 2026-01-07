@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:zpl_designer/core/base_canvas_element.dart';
 import 'package:zpl_designer/core/base_canvas_item.dart';
@@ -33,6 +32,16 @@ class QRCodeCanvasWidget extends BaseCanvasItem<QRCodeCanvasElement> {
 
 class _QRCodeCanvasWidgetState
     extends BaseCanvasItemState<QRCodeCanvasWidget, QRCodeCanvasElement> {
+  /// ZplRotation을 RotatedBox의 quarterTurns로 변환
+  int _getQuarterTurns() {
+    return switch (element.rotation) {
+      ZplRotation.normal => 0,
+      ZplRotation.rotated90 => 1,
+      ZplRotation.inverted => 2,
+      ZplRotation.rotated270 => 3,
+    };
+  }
+
   @override
   Widget renderElement(BuildContext context) {
     return LayoutBuilder(
@@ -57,10 +66,10 @@ class _QRCodeCanvasWidgetState
           ),
         );
 
-        // 회전 적용
+        // 회전 적용 - RotatedBox로 레이아웃 회전
         if (element.rotation != ZplRotation.normal) {
-          content = Transform.rotate(
-            angle: element.rotation.degrees * math.pi / 180,
+          content = RotatedBox(
+            quarterTurns: _getQuarterTurns(),
             child: content,
           );
         }

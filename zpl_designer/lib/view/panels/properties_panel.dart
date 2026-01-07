@@ -7,6 +7,9 @@ import 'package:zpl_designer/provider/canvas_config_provider.dart';
 import 'package:zpl_designer/provider/editor_state_provider.dart';
 import 'package:zpl_designer/view/item/barcode/barcode_canvas_element.dart';
 import 'package:zpl_designer/view/item/box/box_canvas_element.dart';
+import 'package:zpl_designer/view/item/circle/circle_canvas_element.dart';
+import 'package:zpl_designer/view/item/diagonal/diagonal_canvas_element.dart';
+import 'package:zpl_designer/view/item/ellipse/ellipse_canvas_element.dart';
 import 'package:zpl_designer/view/item/line/line_canvas_element.dart';
 import 'package:zpl_designer/view/item/qrcode/qrcode_canvas_element.dart';
 import 'package:zpl_designer/view/item/text/text_canvas_element.dart';
@@ -508,6 +511,9 @@ class _PropertyEditorState extends State<_PropertyEditor> {
     if (widget.element is BarcodeCanvasElement) return Icons.view_week_outlined;
     if (widget.element is QRCodeCanvasElement) return Icons.qr_code_2_outlined;
     if (widget.element is LineCanvasElement) return Icons.horizontal_rule;
+    if (widget.element is DiagonalCanvasElement) return Icons.show_chart;
+    if (widget.element is CircleCanvasElement) return Icons.circle_outlined;
+    if (widget.element is EllipseCanvasElement) return Icons.panorama_fish_eye;
     return Icons.widgets_outlined;
   }
 
@@ -604,6 +610,12 @@ class _PropertyEditorState extends State<_PropertyEditor> {
       return _buildQRCodeProperties(widget.element as QRCodeCanvasElement);
     } else if (widget.element is LineCanvasElement) {
       return _buildLineProperties(widget.element as LineCanvasElement);
+    } else if (widget.element is DiagonalCanvasElement) {
+      return _buildDiagonalProperties(widget.element as DiagonalCanvasElement);
+    } else if (widget.element is CircleCanvasElement) {
+      return _buildCircleProperties(widget.element as CircleCanvasElement);
+    } else if (widget.element is EllipseCanvasElement) {
+      return _buildEllipseProperties(widget.element as EllipseCanvasElement);
     }
     return [];
   }
@@ -950,6 +962,96 @@ class _PropertyEditorState extends State<_PropertyEditor> {
             },
           ),
           const SizedBox(height: AppTheme.spacingSm),
+          _PropertyField(
+            label: 'Thickness',
+            suffix: 'px',
+            controller: thicknessController,
+            onChanged: (value) {
+              element.thickness = (int.tryParse(value) ?? 2).clamp(1, 20);
+              _notifyChange();
+            },
+          ),
+        ],
+      ),
+    ];
+  }
+
+  List<Widget> _buildDiagonalProperties(DiagonalCanvasElement element) {
+    final thicknessController = TextEditingController(text: element.thickness.toString());
+
+    return [
+      _PropertySection(
+        title: 'Diagonal Line',
+        children: [
+          _PropertyDropdown<DiagonalOrientation>(
+            label: 'Orientation',
+            value: element.orientation,
+            items: DiagonalOrientation.values,
+            itemLabel: (o) => o.displayName,
+            onChanged: (value) {
+              if (value != null) {
+                element.orientation = value;
+                _notifyChange();
+              }
+            },
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          _PropertyField(
+            label: 'Thickness',
+            suffix: 'px',
+            controller: thicknessController,
+            onChanged: (value) {
+              element.thickness = (int.tryParse(value) ?? 2).clamp(1, 20);
+              _notifyChange();
+            },
+          ),
+        ],
+      ),
+    ];
+  }
+
+  List<Widget> _buildCircleProperties(CircleCanvasElement element) {
+    final diameterController = TextEditingController(text: element.diameter.toString());
+    final thicknessController = TextEditingController(text: element.thickness.toString());
+
+    return [
+      _PropertySection(
+        title: 'Circle',
+        children: [
+          _PropertyField(
+            label: 'Diameter',
+            suffix: 'mm',
+            controller: diameterController,
+            onChanged: (value) {
+              final diameter = (int.tryParse(value) ?? 20).clamp(5, 500);
+              element.diameter = diameter;
+              element.width = diameter;
+              element.height = diameter;
+              _notifyChange();
+            },
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          _PropertyField(
+            label: 'Thickness',
+            suffix: 'px',
+            controller: thicknessController,
+            onChanged: (value) {
+              element.thickness = (int.tryParse(value) ?? 2).clamp(1, 20);
+              _notifyChange();
+            },
+          ),
+        ],
+      ),
+    ];
+  }
+
+  List<Widget> _buildEllipseProperties(EllipseCanvasElement element) {
+    final thicknessController = TextEditingController(text: element.thickness.toString());
+
+    return [
+      _PropertySection(
+        title: 'Ellipse',
+        children: [
           _PropertyField(
             label: 'Thickness',
             suffix: 'px',

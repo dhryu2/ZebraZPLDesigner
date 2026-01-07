@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:zpl_designer/core/base_canvas_element.dart';
 import 'package:zpl_designer/core/base_canvas_item.dart';
@@ -46,14 +45,27 @@ class _TextCanvasWidgetState
     }
   }
 
+  /// ZplRotation을 RotatedBox의 quarterTurns로 변환
+  int _getQuarterTurns() {
+    return switch (element.rotation) {
+      ZplRotation.normal => 0,
+      ZplRotation.rotated90 => 1,
+      ZplRotation.inverted => 2,
+      ZplRotation.rotated270 => 3,
+    };
+  }
+
   @override
   Widget renderElement(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        // 폰트 크기를 컨테이너에 맞게 조절
-        final fontSize = (constraints.maxHeight * 0.6).clamp(8.0, 100.0);
+        // 회전 시 폰트 크기 계산을 위한 실제 높이 결정
+        final isRotated90or270 = element.rotation == ZplRotation.rotated90 ||
+                                  element.rotation == ZplRotation.rotated270;
+        final effectiveHeight = isRotated90or270 ? constraints.maxWidth : constraints.maxHeight;
+        final fontSize = (effectiveHeight * 0.6).clamp(8.0, 100.0);
 
-        Widget content = Container(
+        Widget textContent = Container(
           decoration: element.showBorder
               ? BoxDecoration(
                   border: Border.all(
@@ -82,15 +94,15 @@ class _TextCanvasWidgetState
           ),
         );
 
-        // 회전 적용
+        // 회전 적용 - RotatedBox로 레이아웃 회전
         if (element.rotation != ZplRotation.normal) {
-          content = Transform.rotate(
-            angle: element.rotation.degrees * math.pi / 180,
-            child: content,
+          textContent = RotatedBox(
+            quarterTurns: _getQuarterTurns(),
+            child: textContent,
           );
         }
 
-        return content;
+        return textContent;
       },
     );
   }

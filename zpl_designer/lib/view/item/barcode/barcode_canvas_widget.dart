@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:zpl_designer/core/base_canvas_element.dart';
 import 'package:zpl_designer/core/base_canvas_item.dart';
@@ -33,11 +32,27 @@ class BarcodeCanvasWidget extends BaseCanvasItem<BarcodeCanvasElement> {
 
 class _BarcodeCanvasWidgetState
     extends BaseCanvasItemState<BarcodeCanvasWidget, BarcodeCanvasElement> {
+  /// ZplRotation을 RotatedBox의 quarterTurns로 변환
+  int _getQuarterTurns() {
+    return switch (element.rotation) {
+      ZplRotation.normal => 0,
+      ZplRotation.rotated90 => 1,
+      ZplRotation.inverted => 2,
+      ZplRotation.rotated270 => 3,
+    };
+  }
+
   @override
   Widget renderElement(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        // 회전 시 크기 계산
+        final isRotated90or270 = element.rotation == ZplRotation.rotated90 ||
+                                  element.rotation == ZplRotation.rotated270;
+        final effectiveWidth = isRotated90or270 ? constraints.maxHeight : constraints.maxWidth;
+        final effectiveHeight = isRotated90or270 ? constraints.maxWidth : constraints.maxHeight;
         final textHeight = element.showText ? 12.0 : 0.0;
+
         Widget content = Container(
           decoration: element.showBorder
               ? BoxDecoration(
@@ -54,14 +69,14 @@ class _BarcodeCanvasWidgetState
               Expanded(
                 child: CustomPaint(
                   painter: _BarcodePainter(element.data),
-                  size: Size(constraints.maxWidth - 4, constraints.maxHeight - textHeight - 4),
+                  size: Size(effectiveWidth - 4, effectiveHeight - textHeight - 4),
                 ),
               ),
               if (element.showText)
                 Text(
                   element.data,
                   style: TextStyle(
-                    fontSize: (constraints.maxHeight * 0.15).clamp(6.0, 12.0),
+                    fontSize: (effectiveHeight * 0.15).clamp(6.0, 12.0),
                     fontFamily: 'monospace',
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -70,10 +85,10 @@ class _BarcodeCanvasWidgetState
           ),
         );
 
-        // 회전 적용
+        // 회전 적용 - RotatedBox로 레이아웃 회전
         if (element.rotation != ZplRotation.normal) {
-          content = Transform.rotate(
-            angle: element.rotation.degrees * math.pi / 180,
+          content = RotatedBox(
+            quarterTurns: _getQuarterTurns(),
             child: content,
           );
         }

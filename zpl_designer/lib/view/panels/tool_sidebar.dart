@@ -28,14 +28,17 @@ class _ToolSidebarState extends State<ToolSidebar> {
         children: [
           const SizedBox(height: AppTheme.spacingSm),
           _buildToolGroup([
-            _ToolItem(ToolType.text, Icons.text_fields_outlined, 'Text (T)'),
-            _ToolItem(ToolType.box, Icons.crop_square_outlined, 'Box (B)'),
-            _ToolItem(ToolType.line, Icons.horizontal_rule, 'Line (L)'),
+            _ToolItem(ToolType.text, Icons.text_fields_outlined, 'Text'),
+            _ToolItem(ToolType.box, Icons.crop_square_outlined, 'Box'),
+            _ToolItem(ToolType.line, Icons.horizontal_rule, 'Line'),
+            _ToolItem(ToolType.diagonal, Icons.show_chart, 'Diagonal'),
+            _ToolItem(ToolType.circle, Icons.circle_outlined, 'Circle'),
+            _ToolItem(ToolType.ellipse, Icons.panorama_fish_eye, 'Ellipse'),
           ]),
           const _Divider(),
           _buildToolGroup([
-            _ToolItem(ToolType.barcode, Icons.view_week_outlined, 'Barcode (C)'),
-            _ToolItem(ToolType.qr, Icons.qr_code_2_outlined, 'QR Code (Q)'),
+            _ToolItem(ToolType.barcode, Icons.view_week_outlined, 'Barcode'),
+            _ToolItem(ToolType.qr, Icons.qr_code_2_outlined, 'QR Code'),
           ]),
           const Spacer(),
         ],

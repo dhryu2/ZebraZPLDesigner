@@ -32,6 +32,18 @@ class ToolIcon extends StatelessWidget {
         icon = Icons.horizontal_rule;
         label = "Line";
         break;
+      case ToolType.diagonal:
+        icon = Icons.show_chart;
+        label = "Diagonal";
+        break;
+      case ToolType.circle:
+        icon = Icons.circle_outlined;
+        label = "Circle";
+        break;
+      case ToolType.ellipse:
+        icon = Icons.panorama_fish_eye;
+        label = "Ellipse";
+        break;
     }
 
     return Column(

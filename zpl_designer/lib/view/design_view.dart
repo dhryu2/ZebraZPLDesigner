@@ -10,6 +10,12 @@ import 'package:zpl_designer/view/item/barcode/barcode_canvas_element.dart';
 import 'package:zpl_designer/view/item/barcode/barcode_canvas_widget.dart';
 import 'package:zpl_designer/view/item/box/box_canvas_element.dart';
 import 'package:zpl_designer/view/item/box/box_canvas_widget.dart';
+import 'package:zpl_designer/view/item/circle/circle_canvas_element.dart';
+import 'package:zpl_designer/view/item/circle/circle_canvas_widget.dart';
+import 'package:zpl_designer/view/item/diagonal/diagonal_canvas_element.dart';
+import 'package:zpl_designer/view/item/diagonal/diagonal_canvas_widget.dart';
+import 'package:zpl_designer/view/item/ellipse/ellipse_canvas_element.dart';
+import 'package:zpl_designer/view/item/ellipse/ellipse_canvas_widget.dart';
 import 'package:zpl_designer/view/item/line/line_canvas_element.dart';
 import 'package:zpl_designer/view/item/line/line_canvas_widget.dart';
 import 'package:zpl_designer/view/item/qrcode/qrcode_canvas_element.dart';
@@ -140,6 +146,15 @@ class DesignViewState extends State<DesignView> {
         break;
       case ToolType.line:
         newElement = _createLineElement(x, y);
+        break;
+      case ToolType.diagonal:
+        newElement = _createDiagonalElement(x, y);
+        break;
+      case ToolType.circle:
+        newElement = _createCircleElement(x, y);
+        break;
+      case ToolType.ellipse:
+        newElement = _createEllipseElement(x, y);
         break;
     }
 
@@ -276,6 +291,33 @@ class DesignViewState extends State<DesignView> {
     ).canvasElement;
   }
 
+  BaseCanvasElement _createDiagonalElement(int x, int y) {
+    return DiagonalCanvasWidget(
+      onRemove: () {},
+      onPositionChanged: null,
+      x: x,
+      y: y,
+    ).canvasElement;
+  }
+
+  BaseCanvasElement _createCircleElement(int x, int y) {
+    return CircleCanvasWidget(
+      onRemove: () {},
+      onPositionChanged: null,
+      x: x,
+      y: y,
+    ).canvasElement;
+  }
+
+  BaseCanvasElement _createEllipseElement(int x, int y) {
+    return EllipseCanvasWidget(
+      onRemove: () {},
+      onPositionChanged: null,
+      x: x,
+      y: y,
+    ).canvasElement;
+  }
+
   Widget _buildElementWidget(BaseCanvasElement element, double pixelsPerMm) {
     void onRemove() {
       _removeElement(element);
@@ -355,6 +397,45 @@ class DesignViewState extends State<DesignView> {
       );
     } else if (element is LineCanvasElement) {
       return LineCanvasWidget(
+        key: ValueKey(element.hashCode),
+        canvasElement: element,
+        onRemove: onRemove,
+        onPositionChanged: onPositionChanged,
+        onSizeChanged: onSizeChanged,
+        onZIndexChanged: onZIndexChanged,
+        onSelected: onSelected,
+        pixelsPerMm: pixelsPerMm,
+        x: element.x,
+        y: element.y,
+      );
+    } else if (element is DiagonalCanvasElement) {
+      return DiagonalCanvasWidget(
+        key: ValueKey(element.hashCode),
+        canvasElement: element,
+        onRemove: onRemove,
+        onPositionChanged: onPositionChanged,
+        onSizeChanged: onSizeChanged,
+        onZIndexChanged: onZIndexChanged,
+        onSelected: onSelected,
+        pixelsPerMm: pixelsPerMm,
+        x: element.x,
+        y: element.y,
+      );
+    } else if (element is CircleCanvasElement) {
+      return CircleCanvasWidget(
+        key: ValueKey(element.hashCode),
+        canvasElement: element,
+        onRemove: onRemove,
+        onPositionChanged: onPositionChanged,
+        onSizeChanged: onSizeChanged,
+        onZIndexChanged: onZIndexChanged,
+        onSelected: onSelected,
+        pixelsPerMm: pixelsPerMm,
+        x: element.x,
+        y: element.y,
+      );
+    } else if (element is EllipseCanvasElement) {
+      return EllipseCanvasWidget(
         key: ValueKey(element.hashCode),
         canvasElement: element,
         onRemove: onRemove,

@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:zpl_designer/core/base_canvas_element.dart';
 import 'package:zpl_designer/core/base_canvas_item.dart';
@@ -35,6 +34,16 @@ class BoxCanvasWidget extends BaseCanvasItem<BoxCanvasElement> {
 
 class _BoxCanvasWidgetState
     extends BaseCanvasItemState<BoxCanvasWidget, BoxCanvasElement> {
+  /// ZplRotation을 RotatedBox의 quarterTurns로 변환
+  int _getQuarterTurns() {
+    return switch (element.rotation) {
+      ZplRotation.normal => 0,
+      ZplRotation.rotated90 => 1,
+      ZplRotation.inverted => 2,
+      ZplRotation.rotated270 => 3,
+    };
+  }
+
   @override
   Widget renderElement(BuildContext context) {
     Widget content = Container(
@@ -47,10 +56,10 @@ class _BoxCanvasWidgetState
       ),
     );
 
-    // 회전 적용 (시각적 효과만, ZPL에서는 지원 안 함)
+    // 회전 적용 - RotatedBox로 레이아웃 회전 (시각적 효과만, ZPL ^GB는 회전 미지원)
     if (element.rotation != ZplRotation.normal) {
-      content = Transform.rotate(
-        angle: element.rotation.degrees * math.pi / 180,
+      content = RotatedBox(
+        quarterTurns: _getQuarterTurns(),
         child: content,
       );
     }
